@@ -1,8 +1,12 @@
 // example declaration file - remove these and add your own custom typings
 
+import { Types } from "creep/types.enum";
+import { Roles } from "creep/roles.enum";
+
 // memory extension samples
 interface CreepMemory {
-  role: string;
+  type: Types;
+  role: Roles;
   room: string;
   working: boolean;
 }
