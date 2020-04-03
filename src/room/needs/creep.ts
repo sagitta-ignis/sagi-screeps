@@ -1,3 +1,4 @@
 import { Roles } from "creep/roles.enum";
 
-export type CreepNeeds = { [index in Roles]: number };
+export type CreepCounters = { [index in Roles]: number }
+export type CreepNeeds = CreepCounters;

@@ -9,8 +9,13 @@ export abstract class BaseCreepFactory implements CreepFactory {
         Factories.add(type, this);
     }
     nextName(): string {
-        const count = _.filter(Game.creeps, (creep) => creepMemory(creep).type == this.type).length;
-        return this.type + (count + 1);
+        let next = 1;
+        const workers = _.filter(Game.creeps, (creep) => creepMemory(creep).type == this.type);
+        if (workers.length) {
+            const highest = _.max(workers, w => +w.name.replace(this.type, ''));
+            next = +highest.name.replace(this.type, '') + 1;
+        }
+        return this.type + next;
     }
     abstract buildIn(spawn: StructureSpawn): FactoryBuildReturn;
 }

@@ -15,7 +15,7 @@ export class Upgrader extends BaseRoleManager {
         return creep.memory as any;
     }
 
-    run(creep: Creep): boolean {
+    run(creep: Creep): ScreepsReturnCode {
         const memory = this.memory(creep);
         if (memory.upgrading && creep.store[RESOURCE_ENERGY] == 0) {
             memory.upgrading = false;
@@ -26,19 +26,29 @@ export class Upgrader extends BaseRoleManager {
             creep.say('⚡ upgrade');
         }
 
+        let code: ScreepsReturnCode = undefined as any;
         if (memory.upgrading && creep.room.controller) {
-            if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(creep.room.controller, { visualizePathStyle: { stroke: '#ffffff' } });
+            code = creep.upgradeController(creep.room.controller);
+            if (code == ERR_NOT_IN_RANGE) {
+                code = creep.moveTo(creep.room.controller, { visualizePathStyle: { stroke: '#ffffff' } });
+            }
+            if (code != OK && code != ERR_TIRED) {
+                console.log(`[${creep.name}]: upgrade failed with [${code}]`);
             }
         } else if (creep.store.getFreeCapacity() != 0) {
-            var sources = creep.room.find(FIND_SOURCES);
-            if (creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(sources[0], { visualizePathStyle: { stroke: '#ffaa00' } });
+            const sources = creep.room.find(FIND_SOURCES);
+            code = creep.harvest(sources[0]);
+            if (code == ERR_NOT_IN_RANGE) {
+                code = creep.moveTo(sources[0], { visualizePathStyle: { stroke: '#ffaa00' } });
             }
-        } else {
-            return false;
+            if (code != OK && code != ERR_TIRED) {
+                console.log(`[${creep.name}]: harvest failed with [${code}]`);
+            }
         }
-        return true;
+        if (code == ERR_BUSY || code == ERR_TIRED) {
+            code = OK;
+        }
+        return code;
     }
 
 }

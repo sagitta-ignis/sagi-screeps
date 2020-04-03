@@ -5,5 +5,5 @@ export interface Assigner {
 
 export interface RoleManager extends Assigner {
     hasRole(creep: Creep): boolean;
-    run(creep: Creep): boolean;
+    run(creep: Creep): ScreepsReturnCode;
 }

@@ -1,7 +1,9 @@
 import { CreepNeeds } from "./needs/creep";
 
 export interface RoomMemory {
-    needs: CreepNeeds;
+    needs: {
+        creeps: CreepNeeds;
+    };
 }
 
 export function roomMemory(room: Room) {

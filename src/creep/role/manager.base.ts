@@ -12,10 +12,10 @@ export abstract class BaseRoleManager implements RoleManager {
         (creep.memory as any).role = this.role;
     }
     unassign(creep: Creep): void {
-        delete (creep.memory as any).role;
+        (creep.memory as any).role = undefined;
     }
     hasRole(creep: Creep): boolean {
         return (creep.memory as any).role == this.role;
     }
-    abstract run(creep: Creep): boolean;
+    abstract run(creep: Creep): ScreepsReturnCode;
 }

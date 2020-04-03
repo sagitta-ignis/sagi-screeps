@@ -14,6 +14,6 @@ export class RoleManagers {
         if (!assigner) {
             console.log(`[ERROR] Missing assigner for type [${role}]`);
         }
-        return assigner || { hasRole: () => false, assign: () => { }, unassign: () => { }, run: () => false };
+        return assigner || { hasRole: () => false, assign: () => { }, unassign: () => { }, run: () => undefined as any };
     }
 }

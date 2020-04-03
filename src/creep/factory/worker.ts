@@ -7,7 +7,7 @@ export class WorkerFactory extends BaseCreepFactory {
 
     constructor() {
         super(Types.Worker);
-        this.cost = 150;
+        this.cost = 200;
     }
 
     buildIn(spawn: StructureSpawn): { code: ScreepsReturnCode, creep?: Creep } {
