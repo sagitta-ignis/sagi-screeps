@@ -5,6 +5,7 @@ import { Task } from "./task/task";
 import { roomMemory } from "./memory";
 import { creepMemory } from "creep/memory";
 import { CreepNeeds, CreepCounters } from "./needs/creep";
+import { UpgradeControllerTask } from "./task/upgrader-controller";
 import { availableStorage } from "utils/available-storage";
 
 export class RoomManager {
@@ -21,7 +22,7 @@ export class RoomManager {
             memory.needs = {
                 creeps: {
                     harvester: 1,
-                    upgrader: 0,
+                    upgrader: -1,
                     builder: 0
                 }
             };
@@ -55,6 +56,12 @@ export class RoomManager {
                         tasks.push(builder);
                     }
                 }
+            }
+        }
+
+        if (this.room.controller) {
+            if (this.room.controller.my) {
+                tasks.push(new UpgradeControllerTask(this.room.controller));
             }
         }
 
