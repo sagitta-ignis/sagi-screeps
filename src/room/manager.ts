@@ -6,6 +6,7 @@ import { roomMemory } from "./memory";
 import { creepMemory } from "creep/memory";
 import { CreepNeeds, CreepCounters } from "./needs/creep";
 import { UpgradeControllerTask } from "./task/upgrader-controller";
+import { ReassignTask } from "./task/reassign";
 import { availableStorage } from "utils/available-storage";
 
 export class RoomManager {
@@ -35,6 +36,11 @@ export class RoomManager {
         };
 
         if (this.needCreeps(counter.creeps)) {
+
+            const reassign = new ReassignTask(counter.creeps);
+            if (reassign.canExecute(this.room)) {
+                reassign.execute(this.room);
+            }
 
             const isSpawning = this.room.find(FIND_MY_SPAWNS, { filter: (spawn) => spawn.spawning }).length > 0;
             if (!isSpawning) {
