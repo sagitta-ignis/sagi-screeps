@@ -4,10 +4,10 @@ import { SpawnTask } from "./task/spawn";
 import { Task } from "./task/task";
 import { roomMemory } from "./memory";
 import { creepMemory } from "creep/memory";
-import { CreepNeeds, CreepCounters } from "./needs/creep";
+import { CreepCounters } from "./needs/creep";
 import { UpgradeControllerTask } from "./task/upgrader-controller";
 import { ReassignTask } from "./task/reassign";
-import { availableStorage } from "utils/available-storage";
+import { HarvestTask } from "./task/harvest";
 
 export class RoomManager {
 
@@ -27,8 +27,6 @@ export class RoomManager {
                     builder: 0
                 }
             };
-        } else {
-            memory.needs.creeps.harvester = this.countAvailableEnergySpots();
         }
 
         const counter = {
@@ -71,11 +69,12 @@ export class RoomManager {
             }
         }
 
-        return tasks;
-    }
+        const harvest = new HarvestTask();
+        if (harvest.canExecute(this.room)) {
+            tasks.push(harvest);
+        }
 
-    private countAvailableEnergySpots() {
-        return this.room.find(FIND_STRUCTURES, { filter: availableStorage }).length > 0 ? 1 : 1;
+        return tasks;
     }
 
     private countCreeps() {

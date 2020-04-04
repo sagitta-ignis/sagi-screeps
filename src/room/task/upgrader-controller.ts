@@ -4,6 +4,7 @@ import { pathCost } from "utils/path-cost";
 import { harvestAndMoveRate } from "utils/rate";
 import { Roles } from "creep/roles.enum";
 import { creepMemory } from "creep/memory";
+import { harvestSpots } from "utils/source";
 
 export class UpgradeControllerTask implements Task {
 
@@ -26,7 +27,7 @@ export class UpgradeControllerTask implements Task {
             const underUpgrading = progressLeft >= progressRate * delay;
             console.log(`[UpgradeControllerTask] calculation is ${progressLeft} ${underUpgrading ? '>=' : '<'} ${progressRate} * ${delay}`);
             if (underUpgrading) {
-                let creeps = Math.ceil(progressLeft / (progressRate * delay)) % sources.length;
+                let creeps = Math.ceil(progressLeft / (progressRate * delay)) % harvestSpots(sources);
                 creeps = Number.isInteger(creeps) && creeps ? creeps : 1;
                 if (creeps != memory.needs.creeps.upgrader) {
                     memory.needs.creeps.upgrader = creeps;

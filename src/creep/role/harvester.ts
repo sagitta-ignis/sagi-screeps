@@ -1,6 +1,6 @@
 import { BaseRoleManager } from "./manager.base";
 import { Roles } from "../roles.enum";
-import { availableStorage } from "utils/available-storage";
+import { availableStorage } from "utils/structure";
 
 export class Harvester extends BaseRoleManager {
 
