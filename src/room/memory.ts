@@ -4,6 +4,7 @@ export interface RoomMemory {
     needs: {
         creeps: CreepNeeds;
     };
+    reservedSources: { [index: string]: number };
 }
 
 export function roomMemory(room: Room) {

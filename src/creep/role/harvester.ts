@@ -1,6 +1,9 @@
 import { BaseRoleManager } from "./manager.base";
 import { Roles } from "../roles.enum";
 import { availableStorage } from "utils/structure";
+import { creepMemory } from "creep/memory";
+import { roomMemory } from "room/memory";
+import { freeSpaceAround } from "utils/terrain";
 
 export class Harvester extends BaseRoleManager {
 
@@ -9,14 +12,29 @@ export class Harvester extends BaseRoleManager {
     }
     run(creep: Creep): ScreepsReturnCode {
         let code: ScreepsReturnCode = undefined as any;
+        const memory = creepMemory(creep);
+        const reservedSources = roomMemory(creep.room).reservedSources;
         if (creep.store.getFreeCapacity() > 0) {
-            const sources = creep.room.find(FIND_SOURCES);
-            code = creep.harvest(sources[0]);
-            if (code == ERR_NOT_IN_RANGE) {
-                code = creep.moveTo(sources[0], { visualizePathStyle: { stroke: '#ffaa00' } });
+            if (!memory.target) {
+                const source = creep.pos.findClosestByRange(FIND_SOURCES, { filter: source => (reservedSources[source.id] || 0) < freeSpaceAround(source).length });
+                if (source) {
+                    const pos = source.pos;
+                    reservedSources[source.id] += 1;
+                    memory.target = {
+                        x: pos.x,
+                        y: pos.y
+                    };
+                }
             }
-            if (code != OK && code != ERR_TIRED) {
-                console.log(`[${creep.name}]: harvest failed with [${code}]`);
+            if (memory.target) {
+                const source = creep.room.lookForAt('source', memory.target.x, memory.target.y)[0];
+                code = creep.harvest(source);
+                if (code == ERR_NOT_IN_RANGE) {
+                    code = creep.moveTo(source, { visualizePathStyle: { stroke: '#ffaa00' } });
+                }
+                if (code != OK && code != ERR_TIRED) {
+                    console.log(`[${creep.name}]: harvest failed with [${code}]`);
+                }
             }
         }
         else {
@@ -35,6 +53,19 @@ export class Harvester extends BaseRoleManager {
             code = OK;
         }
         return code;
+    }
+
+    unassign(creep: Creep) {
+        super.unassign(creep);
+        const memory = creepMemory(creep);
+        if (memory.target) {
+            const source = creep.room.lookForAt('source', memory.target.x, memory.target.y)[0];
+            if (source) {
+                roomMemory(creep.room).reservedSources[source.id] -= 1;
+            }
+            delete memory.target;
+        }
+
     }
 
 }

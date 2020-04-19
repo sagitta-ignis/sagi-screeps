@@ -12,13 +12,7 @@ import { HarvestTask } from "./task/harvest";
 export class RoomManager {
 
     constructor(private room: Room) {
-
-    }
-
-    analyze(): Task[] {
-        const tasks: Task[] = [];
         const memory = roomMemory(this.room);
-
         if (!memory.needs) {
             memory.needs = {
                 creeps: {
@@ -28,6 +22,14 @@ export class RoomManager {
                 }
             };
         }
+        if (!memory.reservedSources) {
+            memory.reservedSources = {};
+        }
+    }
+
+    analyze(): Task[] {
+        const tasks: Task[] = [];
+        const memory = roomMemory(this.room);
 
         const counter = {
             creeps: this.countCreeps()
