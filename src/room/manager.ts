@@ -35,13 +35,12 @@ export class RoomManager {
             creeps: this.countCreeps()
         };
 
+        const reassign = new ReassignTask(counter.creeps);
+        if (reassign.canExecute(this.room)) {
+            reassign.execute(this.room);
+        }
+
         if (this.needCreeps(counter.creeps)) {
-
-            const reassign = new ReassignTask(counter.creeps);
-            if (reassign.canExecute(this.room)) {
-                reassign.execute(this.room);
-            }
-
             const isSpawning = this.room.find(FIND_MY_SPAWNS, { filter: (spawn) => spawn.spawning }).length > 0;
             if (!isSpawning) {
                 if (memory.needs.creeps.harvester > counter.creeps.harvester) {

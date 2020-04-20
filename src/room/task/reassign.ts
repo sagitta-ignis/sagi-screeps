@@ -4,6 +4,7 @@ import { RoleManagers } from "creep/role/managers";
 import { roomMemory } from "room/memory";
 import { creepMemory } from "creep/memory";
 import { CreepCounters } from "room/needs/creep";
+import { harvestSpots, availableEnergy } from "utils/source";
 
 export class ReassignTask implements Task {
 
@@ -26,6 +27,17 @@ export class ReassignTask implements Task {
             this.idleCreeps.splice(0, increase)
                 .forEach(creep => this.reassign(creep, need as Roles));
             this.counters[need as Roles] += increase;
+        }
+        if (this.idleCreeps.length > 0) {
+            const availableSources = room.find(FIND_SOURCES_ACTIVE, { filter: availableEnergy });
+            const spots = harvestSpots(availableSources);
+            for (let creep of this.idleCreeps) {
+                if (this.counters.upgrader === spots) {
+                    break;
+                }
+                this.reassign(creep, Roles.Upgrader);
+                this.counters.upgrader += 1;
+            }
         }
         return OK;
     }
