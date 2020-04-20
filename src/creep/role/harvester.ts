@@ -38,6 +38,7 @@ export class Harvester extends BaseRoleManager {
             }
         }
         else {
+            this.forgetTarget(creep);
             const targets = creep.room.find(FIND_STRUCTURES, { filter: availableStorage });
             if (targets.length > 0) {
                 code = creep.transfer(targets[0], RESOURCE_ENERGY);
@@ -55,8 +56,7 @@ export class Harvester extends BaseRoleManager {
         return code;
     }
 
-    unassign(creep: Creep) {
-        super.unassign(creep);
+    forgetTarget(creep: Creep) {
         const memory = creepMemory(creep);
         if (memory.target) {
             const source = creep.room.lookForAt('source', memory.target.x, memory.target.y)[0];
@@ -65,7 +65,11 @@ export class Harvester extends BaseRoleManager {
             }
             delete memory.target;
         }
+    }
 
+    unassign(creep: Creep) {
+        super.unassign(creep);
+        this.forgetTarget(creep);
     }
 
 }
