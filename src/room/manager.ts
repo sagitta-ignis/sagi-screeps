@@ -8,6 +8,7 @@ import { CreepCounters } from "./needs/creep";
 import { UpgradeControllerTask } from "./task/upgrader-controller";
 import { ReassignTask } from "./task/reassign";
 import { HarvestTask } from "./task/harvest";
+import { BuildExtensionTask } from "./task/build-extension";
 
 export class RoomManager {
 
@@ -21,6 +22,9 @@ export class RoomManager {
                     builder: 0
                 }
             };
+        }
+        if (!memory.harvestSource) {
+            memory.harvestSource = this.findHarvestSource();
         }
         if (!memory.reservedSources) {
             memory.reservedSources = {};
@@ -75,6 +79,11 @@ export class RoomManager {
             tasks.push(harvest);
         }
 
+        const buildExtensionTask = new BuildExtensionTask(counter.creeps);
+        if (buildExtensionTask.canExecute(this.room)) {
+            tasks.push(buildExtensionTask);
+        }
+
         return tasks;
     }
 
@@ -96,6 +105,15 @@ export class RoomManager {
             }
         }
         return false;
+    }
+
+    private findHarvestSource(): { x: number, y: number } {
+        const spawn = this.room.find(FIND_MY_SPAWNS)[0];
+        const source = spawn.pos.findClosestByPath(FIND_SOURCES);
+        if (source)
+            return { x: source.pos.x, y: source.pos.y };
+        else
+            return { x: -1, y: -1 };
     }
 
     run(): void {

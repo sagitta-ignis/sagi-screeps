@@ -6,7 +6,7 @@ export function availableEnergy(source: Source) {
 
 export function harvestSpots(sources: Source[]) {
     return sources.reduce(
-        (spots, source) => spots + freeSpaceAround(source).length,
+        (spots, source) => spots + freeSpaceAround(source.room, source.pos).length,
         0
     );
 }

@@ -13,10 +13,18 @@ export class Harvester extends BaseRoleManager {
     run(creep: Creep): ScreepsReturnCode {
         let code: ScreepsReturnCode = undefined as any;
         const memory = creepMemory(creep);
-        const reservedSources = roomMemory(creep.room).reservedSources;
         if (creep.store.getFreeCapacity() > 0) {
             if (!memory.target) {
-                const source = creep.pos.findClosestByRange(FIND_SOURCES, { filter: source => (reservedSources[source.id] || 0) < freeSpaceAround(source).length });
+                const roomMem = roomMemory(creep.room);
+                const reservedSources = roomMem.reservedSources;
+                const harvestSource = creep.room.lookForAt('source', roomMem.harvestSource.x, roomMem.harvestSource.y)[0];
+                let source: Source | null = null;
+                if (harvestSource && freeSpaceAround(creep.room, harvestSource.pos).length) {
+                    source = harvestSource;
+                }
+                if (!source) {
+                    source = creep.pos.findClosestByRange(FIND_SOURCES, { filter: source => (reservedSources[source.id] || 0) < freeSpaceAround(creep.room, source.pos).length });
+                }
                 if (source) {
                     const pos = source.pos;
                     reservedSources[source.id] += 1;

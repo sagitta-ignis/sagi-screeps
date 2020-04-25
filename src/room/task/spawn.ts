@@ -34,10 +34,10 @@ export class SpawnTask implements Task {
             const result = this.factory.buildIn(this.spawn);
             if (result.creep) {
                 RoleManagers.findBy(this.role).assign(result.creep);
-                console.log(`Spawning at ${this.spawn.name} creep [${result.creep.name}] with role [${this.role}]`);
+                console.log(`[SpawnTask] Spawning at ${this.spawn.name} creep [${result.creep.name}] with role [${this.role}]`);
             }
             if (result.code != OK) {
-                console.log(`Spawning at ${this.spawn.name} failed with [${result.code}]`);
+                console.log(`[SpawnTask] Spawning at ${this.spawn.name} failed with [${result.code}]`);
             }
             delete Memory.spawns[this.spawn.name];
             return result.code;

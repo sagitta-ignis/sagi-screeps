@@ -4,6 +4,7 @@ export interface RoomMemory {
     needs: {
         creeps: CreepNeeds;
     };
+    harvestSource: { x: number, y: number };
     reservedSources: { [index: string]: number };
 }
 
