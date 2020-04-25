@@ -20,11 +20,9 @@ export class HarvestTask implements Task {
     }
 
     execute(room: Room): ScreepsReturnCode {
-        const availableSources = room.find(FIND_SOURCES_ACTIVE, { filter: availableEnergy });
-        const spots = harvestSpots(availableSources);
         const memory = roomMemory(room);
         const carriers = Math.floor((room.energyCapacityAvailable - room.energyAvailable) / this.carry);
-        const harvesters = Math.min(spots, Number.isFinite(carriers) ? carriers : 0)
+        const harvesters = Math.min(memory.harvestSpots, Number.isFinite(carriers) ? carriers : 0)
         if (memory.needs.creeps.harvester !== harvesters) {
             memory.needs.creeps.harvester = harvesters;
             console.log(`[HarvestTask] update needs for harvesters to [${roomMemory(room).needs.creeps.harvester}]`);

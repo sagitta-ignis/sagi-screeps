@@ -9,6 +9,8 @@ import { UpgradeControllerTask } from "./task/upgrader-controller";
 import { ReassignTask } from "./task/reassign";
 import { HarvestTask } from "./task/harvest";
 import { BuildExtensionTask } from "./task/build-extension";
+import { BuildTask } from "./task/build";
+import { availableEnergy, harvestSpots } from "utils/source";
 
 export class RoomManager {
 
@@ -22,6 +24,9 @@ export class RoomManager {
                     builder: 0
                 }
             };
+        }
+        if (!memory.harvestSpots) {
+            memory.harvestSpots = this.countHarvestSpots();
         }
         if (!memory.harvestSource) {
             memory.harvestSource = this.findHarvestSource();
@@ -79,6 +84,11 @@ export class RoomManager {
             tasks.push(harvest);
         }
 
+        const build = new BuildTask();
+        if (build.canExecute(this.room)) {
+            tasks.push(build);
+        }
+
         const buildExtensionTask = new BuildExtensionTask(counter.creeps);
         if (buildExtensionTask.canExecute(this.room)) {
             tasks.push(buildExtensionTask);
@@ -105,6 +115,11 @@ export class RoomManager {
             }
         }
         return false;
+    }
+
+    private countHarvestSpots() {
+        const availableSources = this.room.find(FIND_SOURCES_ACTIVE, { filter: availableEnergy });
+        return harvestSpots(availableSources);
     }
 
     private findHarvestSource(): { x: number, y: number } {
