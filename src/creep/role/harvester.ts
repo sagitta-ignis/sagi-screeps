@@ -12,8 +12,9 @@ export class Harvester extends Worker<AnyStructure> {
 
     protected findClosestSourceByRange(creep: Creep): Source | null {
         const roomMem = roomMemory(creep.room);
+        const reservedSources = roomMem.reservedSources;
         const harvestSource = creep.room.lookForAt('source', roomMem.harvestSource.x, roomMem.harvestSource.y)[0];
-        if (harvestSource && freeSpaceAround(creep.room, harvestSource.pos).length) {
+        if (harvestSource && reservedSources[harvestSource.id] < freeSpaceAround(creep.room, harvestSource.pos).length) {
             return harvestSource;
         }
         return super.findClosestSourceByRange(creep);

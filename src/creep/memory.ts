@@ -5,7 +5,7 @@ export interface CreepMemory {
     type: Types;
     role: Roles;
     working?: boolean;
-    target?: { x: number, y: number };
+    target?: { id: string, x: number, y: number };
 }
 
 export function creepMemory(creep: Creep) {

@@ -47,7 +47,7 @@ export abstract class Worker<WorkTarget extends { pos: RoomPosition }> extends B
             } else {
                 console.log(`[${creep.name}]: no target for harvest found`);
             }
-            if (code == ERR_NO_PATH) {
+            if (code == ERR_NO_PATH || code == ERR_NO_BODYPART) {
                 this.forgetHarvestTarget(creep);
                 code = OK;
             }
@@ -88,10 +88,11 @@ export abstract class Worker<WorkTarget extends { pos: RoomPosition }> extends B
         const pos = source.pos;
         const memory = creepMemory(creep);
         if (!memory.target) {
-            const roomMem = roomMemory(creep.room);
-            roomMem.reservedSources[source.id] += 1;
+            const reservedSources = roomMemory(creep.room).reservedSources;
+            reservedSources[source.id] = (reservedSources[source.id] || 0) + 1;
 
             memory.target = {
+                id: source.id,
                 x: pos.x,
                 y: pos.y
             };
@@ -101,10 +102,9 @@ export abstract class Worker<WorkTarget extends { pos: RoomPosition }> extends B
     protected forgetHarvestTarget(creep: Creep): void {
         const memory = creepMemory(creep);
         if (memory.target) {
-            const source = creep.room.lookForAt('source', memory.target.x, memory.target.y)[0];
-            if (source) {
-                roomMemory(creep.room).reservedSources[source.id] -= 1;
-            }
+            const reservedSources = roomMemory(creep.room).reservedSources;
+            if (reservedSources[memory.target.id] > 0)
+                reservedSources[memory.target.id] -= 1;
             delete memory.target;
         }
     }
