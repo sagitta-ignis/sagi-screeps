@@ -4,6 +4,7 @@ import { Roles } from "./roles.enum";
 export interface CreepMemory {
     type: Types;
     role: Roles;
+    working?: boolean;
     target?: { x: number, y: number };
 }
 

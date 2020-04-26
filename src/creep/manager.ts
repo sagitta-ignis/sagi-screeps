@@ -13,7 +13,7 @@ export class CreepManager {
                 const role = creepMemory(creep).role;
                 if (role) {
                     this.execute(creep, RoleManagers.findBy(role));
-                } else if (creep.moveTo(creep.room.find(FIND_FLAGS, { filter: (flag) => (flag.memory as any).type == IDLE })[0]) == ERR_NO_BODYPART) {
+                } else if (creep.moveTo(creep.room.find(FIND_FLAGS, { filter: (flag) => flag.name == IDLE })[0]) == ERR_NO_BODYPART) {
                     Game.time % 5 === 0 && creep.say(`I'm crippled`);
                 } else {
                     Game.time % 5 === 0 && creep.say(`I'm idle`);
