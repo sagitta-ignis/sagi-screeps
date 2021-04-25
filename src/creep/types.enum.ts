@@ -1,3 +1,3 @@
 export enum Types {
-    Worker = 'worker',
+  Worker = "worker"
 }

@@ -1,30 +1,33 @@
-import { RoleManagers } from "./role/managers";
 import { RoleManager } from "./role/manager.interface";
-import { creepMemory } from "./memory";
+import { RoleManagers } from "./role/managers";
 
-export const IDLE = 'idle';
+export const IDLE = "idle";
 
 export class CreepManager {
-
-    run(): void {
-        for (let name in Game.creeps) {
-            const creep = Game.creeps[name];
-            if (!creep.spawning) {
-                const role = creepMemory(creep).role;
-                if (role) {
-                    this.execute(creep, RoleManagers.findBy(role));
-                } else if (creep.moveTo(creep.room.find(FIND_FLAGS, { filter: (flag) => flag.name == IDLE })[0]) == ERR_NO_BODYPART) {
-                    Game.time % 5 === 0 && creep.say(`I'm crippled`);
-                } else {
-                    Game.time % 5 === 0 && creep.say(`I'm idle`);
-                }
+  public run(): void {
+    for (const name in Game.creeps) {
+      const creep = Game.creeps[name];
+      if (!creep.spawning) {
+        const role = creep.memory.role;
+        if (role) {
+          this.execute(creep, RoleManagers.findBy(role));
+        } else {
+          const move = creep.moveTo(creep.room.find(FIND_FLAGS, { filter: flag => flag.name === IDLE })[0]);
+          if (Game.time % 5) {
+            if (move === ERR_NO_BODYPART) {
+              creep.say(`I'm crippled`);
+            } else {
+              creep.say(`I'm idle`);
             }
+          }
         }
+      }
     }
+  }
 
-    execute(creep: Creep, manager: RoleManager) {
-        if (manager.run(creep) != OK) {
-            manager.unassign(creep);
-        }
+  public execute(creep: Creep, manager: RoleManager): void {
+    if (manager.run(creep) !== OK) {
+      manager.unassign(creep);
     }
+  }
 }

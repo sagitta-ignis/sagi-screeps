@@ -1,19 +1,35 @@
 // example declaration file - remove these and add your own custom typings
 
-import { Types } from "creep/types.enum";
+import { CreepNeeds } from "room/needs/creep";
 import { Roles } from "creep/roles.enum";
+import { Types } from "creep/types.enum";
 
-// memory extension samples
-interface CreepMemory {
-  type: Types;
-  role: Roles;
-  room: string;
-  working: boolean;
-}
+declare global {
+  // memory extension samples
+  interface CreepMemory {
+    type: Types;
+    role?: Roles;
+    working?: boolean;
+    target?: { id: string; x: number; y: number };
+  }
 
-interface Memory {
-  uuid: number;
-  log: any;
+  interface RoomMemory {
+    needs: {
+      creeps: CreepNeeds;
+    };
+    harvestSpots: number;
+    harvestSource: { x: number; y: number };
+    reservedSources: { [index: string]: number };
+  }
+
+  interface SpawnMemory {
+    task?: boolean;
+  }
+
+  interface Memory {
+    uuid: number;
+    log: any;
+  }
 }
 
 // `global` extension samples
