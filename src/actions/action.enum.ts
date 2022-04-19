@@ -1,4 +1,5 @@
 export enum Action {
   UpgradeController,
-  HarvestSource
+  HarvestSource,
+  BuildConstructionSite
 }
