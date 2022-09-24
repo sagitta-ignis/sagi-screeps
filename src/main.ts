@@ -1,5 +1,6 @@
 import { ErrorMapper } from "utils/ErrorMapper";
 import { cleanupCreeps } from "utils/cleanupCreeps";
+import { RoomRunner } from "room/runner";
 
 declare global {
   /*
@@ -37,4 +38,6 @@ export const loop = ErrorMapper.wrapLoop(() => {
   console.log(`Current game tick is ${Game.time}`);
 
   cleanupCreeps();
+
+  RoomRunner.runAllRooms();
 });
